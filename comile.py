@@ -20,7 +20,7 @@ def confiure_clamav():
 
 def make_clamav():
     os.chdir(clamav_dir)
-    cmd = 'make -j3 && make install'
+    cmd = 'make -j4 && make install'
     os.system(cmd)
     os.chdir(pwd)
 
