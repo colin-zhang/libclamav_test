@@ -2,7 +2,9 @@
 import os
 
 pwd = os.getcwd()
-clamav_dir = pwd + "/clamav-devel"
+#clamav_rel_dir = os.popen('find . -maxdepth 1 -type d -name "*clamav*"').read()
+
+clamav_dir = os.path.join(pwd, "clamav-devel-clamav-0.100.0")
 install_dir = pwd + "/opt"
 
 def confiure_clamav():
@@ -15,6 +17,9 @@ def confiure_clamav():
           " --exec-prefix=" + install_dir + \
           " --enable-static  --disable-rpath " \
           " --enable-fast-install "
+
+    # " --with-libjson no "
+    print(cmd)
     os.system(cmd)
     os.chdir(pwd)
 
@@ -26,7 +31,7 @@ def make_clamav():
 
 def run():
     try:
-        confiure_clamav()
+        #confiure_clamav()
         make_clamav()
     finally:
         print("error")

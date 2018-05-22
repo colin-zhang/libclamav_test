@@ -1,12 +1,17 @@
 #!/bin/sh
 set -e
 
-if [[ -d  clamav-devel ]]; then
-    echo "exitst git pull"
-    cd clamav-devel && git pull
-    cd $OLDPWD
-else
-    git clone git@github.com:Cisco-Talos/clamav-devel.git
+#if [[ -d  clamav-devel ]]; then
+#    echo "exitst git pull"
+#    cd clamav-devel && git pull
+#    cd $OLDPWD
+#else
+#    git clone git@github.com:Cisco-Talos/clamav-devel.git
+#fi
+
+if [[ ! -d  clamav-devel-clamav-0.100.0 ]]; then
+    wget https://github.com/Cisco-Talos/clamav-devel/archive/clamav-0.100.0.tar.gz
+    tar -xf clamav-0.100.0.tar.gz
 fi
 
 mkdir -p opt

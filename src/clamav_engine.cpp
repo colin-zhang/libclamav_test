@@ -147,7 +147,6 @@ int ClamavEngine::buildEngine()
         return -1;
     }
 
-
     cl_engine_set_clcb_pre_scan(engine_, pre_scan);
 
     sig_num_ = sigs;

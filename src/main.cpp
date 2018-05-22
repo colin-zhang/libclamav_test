@@ -12,14 +12,12 @@
 #include <vector>
 
 #include "clamav_engine.h"
-
 #include "clock_time.h"
-
 #include "gperftools/profiler.h"
 
 static ClamavEngine* clamav = nullptr;
-static std::string av_database;
-static std::string scan_path;
+static std::string av_database = "pre/database";
+static std::string scan_path = "pre/sample";
 
 
 static ssize_t get_file_size(const char* path)
@@ -41,15 +39,13 @@ int buildGlobalEngine(const char* path)
     if (nullptr == clamav) {
         return -1;
     }
-    clamav->buildEngine();
+    return clamav->buildEngine();
 }
 
 void destroyGlobalEngine()
 {
     delete clamav;
 }
-
-
 
 int get_files(const char* path, std::vector<std::string>& files)
 {
@@ -110,7 +106,6 @@ int get_files(const char* path, std::vector<std::string>& files)
     return num;
 }
 
-
 int scan_file(const char* file_name, int if_fd)
 {
     ssize_t file_size = get_file_size(file_name);
@@ -143,20 +138,20 @@ int scan_file(const char* file_name, int if_fd)
                     , result.type
                     , result.virname);
     fclose(fp);
+    return 0;
 }
 
-
-int main(int arc, char* argv[]) {
-
+int main(int arc, char* argv[])
+{
     int opt = 0;
     int if_fd = 0;
+    int just_load = 0;
 
-    while (opt =  getopt(arc, argv, "d:s:f"))
+    while (opt =  getopt(arc, argv, "d:s:fi"))
     {
         if (opt == -1) {
             break;
         }
-
         switch (opt) {
             case 'd':
                 av_database = std::string(optarg);
@@ -168,6 +163,9 @@ int main(int arc, char* argv[]) {
             case 'f':
                 if_fd = 1;
                 break;
+            case 'i':
+                just_load = 1;
+                break;
             default:
                 exit(-1);
                 break;
@@ -177,20 +175,34 @@ int main(int arc, char* argv[]) {
     std::vector<std::string> files;
     get_files(scan_path.c_str(), files);
 
-    printf("clamav version=%s \n", clamav->getClamavVersion().c_str());
-    buildGlobalEngine(av_database.c_str());
-
-     ProfilerStart("./scan.perf");
-     ClockTime clock_time;
-     clock_time.GatherNow();
-
-    for (std::vector<std::string>::iterator it = files.begin();
-         it != files.end(); it++) {
-        scan_file(it->c_str(), if_fd);
+    if (buildGlobalEngine(av_database.c_str()) < 0 ) {
+        fprintf(stderr, 
+                "fail to compile database, %s\n"
+                , clamav->getErrInfo().c_str()      
+                );
     }
 
-    clock_time.PrintDuration();
-    ProfilerStop();
+    printf("db info: \n%s \n"
+            , CVDInfoList2String(clamav->getCVDInfoList()).c_str());
+
+    printf("clamav version:%s, virus num:%lu\n"
+           , clamav->getClamavVersion().c_str()
+           , clamav->getSigNum()
+          );
+
+    if (!just_load)
+    {
+        ProfilerStart("./scan.perf");
+        ClockTime clock_time;
+        clock_time.GatherNow();
+
+        for (auto it = files.begin(); it != files.end(); it++) {
+            scan_file(it->c_str(), if_fd);
+        }
+
+        clock_time.PrintDuration();
+        ProfilerStop();
+    }
 
     destroyGlobalEngine();
     return 0;
