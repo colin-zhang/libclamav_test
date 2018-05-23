@@ -40,3 +40,10 @@ PROFILE: interrupts/evictions/bytes = 2729/1146/275136
 
 ```
 
+### 其他
+#### 测试发现
+- 通过测试发现daily.ldb库会生成正则表达式, libclamav中正则匹配花费的时间较长(4-5秒)
+- 默认情况下libclamav会记住扫描文件, 下次扫描时立即可查出文件(100毫秒以下), 默认cache.
+- 大致情况:libclamav根据文件类型将文件解压缩, 将目录或子文件还原的/tmp/clamav_XXX目录, 然后一个一个处理(如, 匹配), 最后将整个临时目录删除
+#### 病毒库格式说明
+[https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/docs/UserManual/Signatures.md](https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/docs/UserManual/Signatures.md)

@@ -24,7 +24,8 @@ struct ClamavScanResult
     uint8_t stat;
     char type[40];
     ClamavScanResult()
-    : size(0)
+    : virname("")
+    , size(0)
     , stat(0)
     {
         //type[0] = 0;
@@ -32,6 +33,7 @@ struct ClamavScanResult
     }
 };
 
+//TODO, enable more settings
 struct ClamavSettings
 {
     long long max_file_size;
@@ -88,7 +90,9 @@ public:
     explicit ClamavEngine(const char* path);
     ~ClamavEngine();
 
-    std::string getClamavVersion();
+    static std::string getClamavVersion();
+    static void enableDebug();
+
     
     int buildEngine();
 
@@ -109,7 +113,7 @@ public:
 
     uint32_t scanSettingMask(const char* setting_section);
     
-    const std::string&   getErrInfo() 
+    const std::string& getErrInfo() 
     {
         return err_info_;
     }

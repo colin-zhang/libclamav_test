@@ -69,8 +69,7 @@ int get_files(const char* path, std::vector<std::string>& files)
 
     do {
         sub_dirs.clear();
-        std::map<std::string, DIR*>::iterator it;
-        for (it = dir_maps.begin(); it != dir_maps.end(); it++) {
+        for (auto it = dir_maps.begin(); it != dir_maps.end(); it++) {
             it->second = opendir(it->first.c_str());
             if (it->second == NULL) {
                 fprintf(stderr, "opendir %s : %s \n", it->first.c_str(), strerror(errno));
@@ -97,7 +96,7 @@ int get_files(const char* path, std::vector<std::string>& files)
         }
 
         dir_maps.clear();
-        for (std::vector<std::string>::iterator it = sub_dirs.begin(); it != sub_dirs.end(); it++) {
+        for (auto it = sub_dirs.begin(); it != sub_dirs.end(); it++) {
             dir_maps[*it] = NULL;
         }
 
@@ -146,8 +145,9 @@ int main(int arc, char* argv[])
     int opt = 0;
     int if_fd = 0;
     int just_load = 0;
+    int loop_num = 1;
 
-    while (opt =  getopt(arc, argv, "d:s:fi"))
+    while ((opt =  getopt(arc, argv, "d:s:fil:v")))
     {
         if (opt == -1) {
             break;
@@ -165,6 +165,12 @@ int main(int arc, char* argv[])
                 break;
             case 'i':
                 just_load = 1;
+                break;            
+            case 'l':
+                loop_num = atoi(optarg);
+                break;
+            case 'v':
+                ClamavEngine::enableDebug();
                 break;
             default:
                 exit(-1);
@@ -192,16 +198,21 @@ int main(int arc, char* argv[])
 
     if (!just_load)
     {
-        ProfilerStart("./scan.perf");
-        ClockTime clock_time;
-        clock_time.GatherNow();
+        for (int i = 0; i < loop_num; i++)
+        {
+            char file_name[1024];
+            snprintf(file_name, sizeof file_name, "scan_%02d.perf", i);
+            ProfilerStart(file_name);
+            ClockTime clock_time;
+            clock_time.GatherNow();
 
-        for (auto it = files.begin(); it != files.end(); it++) {
-            scan_file(it->c_str(), if_fd);
+            for (auto it = files.begin(); it != files.end(); it++) {
+                scan_file(it->c_str(), if_fd);
+            }
+
+            clock_time.PrintDuration();
+            ProfilerStop();
         }
-
-        clock_time.PrintDuration();
-        ProfilerStop();
     }
 
     destroyGlobalEngine();

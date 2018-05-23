@@ -60,7 +60,7 @@ public:
         uint64_t ns = tp.tv_nsec % 1000;
         double vsm = (double)tp.tv_nsec / 1000 + tp.tv_sec*1000*1000;
         double cycle = (double)(rdtsc_[1] - rdtsc_[0]) / 1000 / 1000;
-        printf("[%lds, %llums, %lluus, %lluns], "
+        printf("[%lus, %lums, %luus, %luns], "
                "[%6.3fus], "
                "[%6.6fM cycles]\n",
                tp.tv_sec, ms, vs, ns,

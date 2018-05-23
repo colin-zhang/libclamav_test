@@ -4,10 +4,10 @@
 #include "clamav_engine.h"
 
 ClamavEngine::ClamavEngine(const char* path)
-    : db_path_(path)
+    : sig_num_(0)
+    , db_path_(path)
     , engine_(NULL)
     , dbstat_(NULL)
-    , sig_num_(0)
 {
     int ret;
     if ((ret = cl_init(CL_INIT_DEFAULT)) != CL_SUCCESS)
@@ -44,6 +44,11 @@ std::string ClamavEngine::getClamavVersion()
     return std::string(cl_retver());
 }
 
+void ClamavEngine::enableDebug()
+{
+    cl_debug();
+}
+
 int ClamavEngine::reBuildEngine()
 {
     struct cl_settings *settings = NULL;
@@ -76,6 +81,8 @@ int ClamavEngine::setSettings(ClamavSettings* settings)
     if (settings->max_scan_size != 0)
         cl_engine_set_num(engine_, CL_ENGINE_MAX_SCANSIZE, settings->max_scan_size);
 
+    //cl_engine_set_num(engine, CL_ENGINE_AC_ONLY, 1);
+
     getSettings();
     return 0;
 }
@@ -89,7 +96,6 @@ int ClamavEngine::getSettings()
     printf("CL_ENGINE_MAX_SCANSIZE = %lld\n", val);
     return 0;
 }
-
 
 static cl_error_t pre_scan(int fd, const char *type, void *context)
 {
@@ -118,7 +124,7 @@ int ClamavEngine::buildEngine()
     std::string cvd_pattern = db_path_ + "/*.cvd";
     glob(cvd_pattern.c_str(), GLOB_NOSORT, NULL, &buf); 
     cvd_info_list_.clear();                                                                               
-    for (int i=0; i < buf.gl_pathc; i++)  
+    for (size_t i=0; i < buf.gl_pathc; i++)  
     {  
         struct cl_cvd* cvd_header_p = cl_cvdhead(buf.gl_pathv[i]);
         ClamavVDInfo cvd_info;
@@ -208,7 +214,6 @@ int ClamavEngine::ScanFmap(void* ptr, size_t len, ClamavScanResult* result, uint
     cl_fmap_close(map);
     return 0;
 }
-
 
 int ClamavEngine::scanFileFdRaw(int fd , ClamavScanResult* result)
 {
