@@ -5,7 +5,7 @@ pwd = os.getcwd()
 #clamav_rel_dir = os.popen('find . -maxdepth 1 -type d -name "*clamav*"').read()
 
 clamav_dir = os.path.join(pwd, "clamav-devel-clamav-0.100.0")
-install_dir = pwd + "/opt"
+install_dir = pwd + "/local"
 
 def confiure_clamav():
     os.putenv('CPPFLAGS', '-g')
@@ -16,9 +16,10 @@ def confiure_clamav():
     cmd = './configure --prefix=' + install_dir + \
           ' --exec-prefix=' + install_dir + \
           ' --enable-static  --disable-rpath ' + \
-          ' --enable-fast-install ' + \
-          ' CFLAGS="-I%s/include"'%(install_dir) + \
-          ' LDFLAGS="-I%s/lib -l:libhs.a "'%(install_dir)
+          ' --enable-fast-install '  + \
+          ' --with-openssl=' + install_dir
+    #      ' CFLAGS="-I%s/include"'%(install_dir) + \
+    #      ' LDFLAGS="-I%s/lib -l:libhs.a "'%(install_dir)
     # " --with-zlib=" + install_dir \
     # --with-zlib=
     # --with-system-llvm=xxxxx/bin/llvm-config

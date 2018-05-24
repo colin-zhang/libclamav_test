@@ -8,16 +8,16 @@ set(CMAKE_CXX_FLAGS
 
 #add_subdirectory(clamav-devel-clamav-0.100.0)
 
-link_directories(opt/lib64)
-link_directories(opt/lib)
-include_directories(opt/include)
+link_directories(local/lib)
+include_directories(local/include)
 
 aux_source_directory(src SrcList)
 add_executable(av_test ${SrcList})
 #add_executable(av_test src/main.cpp src/clamav_engine.cpp)
 
-target_link_libraries(av_test libclamav.a libclammspack.a libclamunrar.a libclamunrar_iface.a libhs.a)
-target_link_libraries(av_test ltdl m pthread z pcre pcre2-8 json-c xml2 crypto ssl)
+
+target_link_libraries(av_test ltdl m pthread z pcre pcre2-8 xml2 crypto ssl)
+target_link_libraries(av_test libclamav.a)
 target_link_libraries(av_test profiler)
 
 #target_link_libraries(av_test libclamav_0992.a)
