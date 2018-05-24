@@ -14,9 +14,11 @@ def confiure_clamav():
     os.system('make distclean')
 
     cmd = './configure --prefix=' + install_dir + \
-          " --exec-prefix=" + install_dir + \
-          " --enable-static  --disable-rpath " \
-          " --enable-fast-install " \
+          ' --exec-prefix=' + install_dir + \
+          ' --enable-static  --disable-rpath ' + \
+          ' --enable-fast-install ' + \
+          ' CFLAGS="-I%s/include"'%(install_dir) + \
+          ' LDFLAGS="-I%s/lib -l:libhs.a "'%(install_dir)
     # " --with-zlib=" + install_dir \
     # --with-zlib=
     # --with-system-llvm=xxxxx/bin/llvm-config

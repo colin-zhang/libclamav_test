@@ -187,6 +187,7 @@ int main(int arc, char* argv[])
                 "fail to compile database, %s\n"
                 , clamav->getErrInfo().c_str()      
                 );
+        return -1;
     }
 
     printf("db info: \n%s \n"
