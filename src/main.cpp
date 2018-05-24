@@ -14,6 +14,7 @@
 #include "clamav_engine.h"
 #include "clock_time.h"
 #include "gperftools/profiler.h"
+#include <zlib.h>
 
 static ClamavEngine* clamav = nullptr;
 static std::string av_database = "pre/database";
@@ -191,6 +192,7 @@ int main(int arc, char* argv[])
     printf("db info: \n%s \n"
             , CVDInfoList2String(clamav->getCVDInfoList()).c_str());
 
+    printf("zlib version:%s\n", zlibVersion());
     printf("clamav version:%s, virus num:%lu\n"
            , clamav->getClamavVersion().c_str()
            , clamav->getSigNum()

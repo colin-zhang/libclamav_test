@@ -16,8 +16,10 @@ def confiure_clamav():
     cmd = './configure --prefix=' + install_dir + \
           " --exec-prefix=" + install_dir + \
           " --enable-static  --disable-rpath " \
-          " --enable-fast-install "
-
+          " --enable-fast-install " \
+    # " --with-zlib=" + install_dir \
+    # --with-zlib=
+    # --with-system-llvm=xxxxx/bin/llvm-config
     # " --with-libjson no "
     print(cmd)
     os.system(cmd)
@@ -31,7 +33,7 @@ def make_clamav():
 
 def run():
     try:
-        #confiure_clamav()
+        confiure_clamav()
         make_clamav()
     finally:
         print("error")

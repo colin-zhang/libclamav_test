@@ -47,3 +47,6 @@ PROFILE: interrupts/evictions/bytes = 2729/1146/275136
 - 大致情况:libclamav根据文件类型将文件解压缩, 将目录或子文件还原的/tmp/clamav_XXX目录, 然后一个一个处理(如, 匹配), 最后将整个临时目录删除
 #### 病毒库格式说明
 [https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/docs/UserManual/Signatures.md](https://github.com/Cisco-Talos/clamav-devel/blob/dev/0.101/docs/UserManual/Signatures.md)
+
+#### Fef
+[https://github.com/Cisco-Talos/clamav-faq/tree/master/manual](https://github.com/Cisco-Talos/clamav-faq/tree/master/manual)
