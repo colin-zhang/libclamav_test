@@ -25,7 +25,7 @@ def confiure_clamav():
           ' --enable-static  --disable-rpath ' + \
           ' --enable-fast-install ' + \
           ' CFLAGS="-DHAVE_REMATCHALGORITHM=1 -I%s/include"'%(install_dir) + \
-          ' LDFLAGS="-L%s/lib -l:libhs.a "'%(install_dir)
+          ' LDFLAGS="-L%s/lib -L%s/lib64 -l:libhs.a -fPIC  "'%(install_dir,install_dir)
     # " --with-zlib=" + install_dir \
     # --with-zlib=
     # --with-system-llvm=xxxxx/bin/llvm-config
@@ -60,7 +60,7 @@ def build_hyperscan():
         os.system("git clone https://github.com/intel/hyperscan")
 
     os.chdir(hyperscan_dir)
-    os.system("cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DBOOST_ROOT=%s/boost_1_67_0 -DCMAKE_INSTALL_PREFIX=%s  ."%(boost_dir,install_dir))
+    os.system("cmake -DCMAKE_BUILD_TYPE=MinSizeRel -DCMAKE_C_FLAGS=-fPIC -DBOOST_ROOT=%s -DCMAKE_INSTALL_PREFIX=%s  ."%(boost_dir,install_dir))
     os.system("make -j2 install")
     os.chdir(pwd)
 
@@ -81,7 +81,7 @@ def run():
             else:
                 make_clamav()
         finally:
-            os.exit(0)
+            pass
         
 if __name__=='__main__':
     run()
