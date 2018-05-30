@@ -73,7 +73,6 @@ def run():
 
     if args.hyperscan:
         build_hyperscan()
-        os.exit(0)
     else:
         try:
             if args.configure:
