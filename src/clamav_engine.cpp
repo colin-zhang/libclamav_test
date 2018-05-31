@@ -49,7 +49,7 @@ void ClamavEngine::enableDebug()
     cl_debug();
 }
 
-int ClamavEngine::reBuildEngine()
+int ClamavEngine::reBuildEngine(ClamavSettings* av_settings)
 {
     struct cl_settings *settings = NULL;
     if (engine_)
@@ -71,18 +71,23 @@ int ClamavEngine::reBuildEngine()
         }
         cl_engine_settings_free(settings);
     }
-    return buildEngine();
+    return buildEngine(av_settings);
 }
 
 int ClamavEngine::setSettings(ClamavSettings* settings)
 {
+    if (NULL == settings)
+    {
+        cl_engine_set_num(engine_, CL_ENGINE_AC_ONLY, 1);
+        return 0;
+    }
+
     if (settings->max_file_size != 0)
         cl_engine_set_num(engine_, CL_ENGINE_MAX_FILESIZE, settings->max_file_size);
     if (settings->max_scan_size != 0)
         cl_engine_set_num(engine_, CL_ENGINE_MAX_SCANSIZE, settings->max_scan_size);
 
     //cl_engine_set_num(engine, CL_ENGINE_AC_ONLY, 1);
-
     getSettings();
     return 0;
 }
@@ -93,6 +98,8 @@ int ClamavEngine::getSettings()
     val = cl_engine_get_num(engine_, CL_ENGINE_MAX_FILESIZE, NULL);
     printf("CL_ENGINE_MAX_FILESIZE = %lld, ", val);
     val = cl_engine_get_num(engine_, CL_ENGINE_MAX_SCANSIZE, NULL);
+
+    //cl_engine_set_num(engine_, CL_ENGINE_AC_ONLY, 1);
     printf("CL_ENGINE_MAX_SCANSIZE = %lld\n", val);
     return 0;
 }
@@ -105,7 +112,7 @@ static cl_error_t pre_scan(int fd, const char *type, void *context)
     return CL_CLEAN;
 }
 
-int ClamavEngine::buildEngine()
+int ClamavEngine::buildEngine(ClamavSettings* av_settings)
 {
     unsigned int sigs = 0;
     if (NULL == engine_)
@@ -143,6 +150,8 @@ int ClamavEngine::buildEngine()
         err_info_ += cl_strerror(ret);
         return -1;
     }
+
+    setSettings(av_settings);
 
     if ((ret = cl_engine_compile(engine_)) != CL_SUCCESS)
     {

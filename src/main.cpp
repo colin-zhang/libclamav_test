@@ -40,7 +40,7 @@ int buildGlobalEngine(const char* path)
     if (nullptr == clamav) {
         return -1;
     }
-    return clamav->buildEngine();
+    return clamav->buildEngine(NULL);
 }
 
 void destroyGlobalEngine()
@@ -122,7 +122,7 @@ int scan_file(const char* file_name, int if_fd)
     } else {
         char* file_mem = new char[file_size];
         fread(file_mem, 1, file_size, fp);
-        ret = clamav->ScanFmap(file_mem, file_size, &result, CL_SCAN_STDOPT);
+        ret = clamav->ScanFmap(file_mem, file_size, &result, CL_SCAN_RAW); //CL_SCAN_STDOPT
         delete[] file_mem;
     }
 

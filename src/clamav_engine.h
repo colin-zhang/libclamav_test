@@ -94,9 +94,9 @@ public:
     static void enableDebug();
 
     
-    int buildEngine();
+    int buildEngine(ClamavSettings* av_settings = NULL);
 
-    int reBuildEngine();
+    int reBuildEngine(ClamavSettings* av_settings = NULL);
 
     int ScanFmap(void* ptr, size_t len, ClamavScanResult* result, uint32_t scan_opt);
 
