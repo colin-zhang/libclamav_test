@@ -4,8 +4,11 @@ import argparse
 
 pwd = os.getcwd()
 #clamav_rel_dir = os.popen('find . -maxdepth 1 -type d -name "*clamav*"').read()
+#clamav version
+#clamav_version="clamav-devel-clamav-0.99.4"
+clamav_version="clamav-devel-clamav-0.100.0"
 
-clamav_dir = os.path.join(pwd, "clamav-devel-clamav-0.100.0")
+clamav_dir = os.path.join(pwd, clamav_version)
 install_dir = pwd + "/opt"
 vendors_dir = pwd + "/vendors"
 

@@ -154,7 +154,7 @@ int ClamavEngine::buildEngine()
     }
 
     cl_engine_set_clcb_pre_scan(engine_, pre_scan);
-    cl_engine_set_ReMatchAlgorithm(engine_, 1);
+    //cl_engine_set_ReMatchAlgorithm(engine_, 2);
 
     sig_num_ = sigs;
     err_info_ = "OK";

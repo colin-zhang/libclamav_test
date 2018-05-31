@@ -16,7 +16,10 @@ aux_source_directory(src SrcList)
 add_executable(av_test ${SrcList})
 #add_executable(av_test src/main.cpp src/clamav_engine.cpp)
 
-target_link_libraries(av_test libclamav.a libclammspack.a libclamunrar.a libclamunrar_iface.a libhs.a)
+
+target_link_libraries(av_test libclamav.a libclamunrar.a libclamunrar_iface.a libhs.a)
+#for clamav-0.100.0
+target_link_libraries(av_test libclammspack.a)
 target_link_libraries(av_test ltdl m pthread z pcre pcre2-8 json-c xml2 crypto ssl)
 target_link_libraries(av_test profiler)
 

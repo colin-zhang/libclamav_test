@@ -14,6 +14,11 @@ if [[ ! -d  clamav-devel-clamav-0.100.0 ]]; then
     tar -xf clamav-0.100.0.tar.gz
 fi
 
+if [[ ! -d  clamav-devel-clamav-0.99.4 ]]; then
+    wget https://github.com/Cisco-Talos/clamav-devel/archive/clamav-0.99.4.tar.gz
+    tar -xf clamav-0.99.4.tar.gz
+fi
+
 mkdir -p opt
 mkdir -p pre/database
 
