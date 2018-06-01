@@ -38,10 +38,19 @@ struct ClamavSettings
 {
     long long max_file_size;
     long long max_scan_size;
+
+    int ReMatchAlgorithm;
+
+    std::string tmp_file_dir;
+
     ClamavSettings()
     : max_file_size(0)
     , max_scan_size(0)
-    {}
+    , ReMatchAlgorithm(kReMatchAlgorithm_None)\
+    , tmp_file_dir("")
+    {
+
+    }
 };
 
 // ClamAV Virus Database : CVD
@@ -51,7 +60,7 @@ struct ClamavVDInfo
     struct cl_cvd* info;
 };
 
-static std::string CVDInfoList2String(std::vector<ClamavVDInfo>& v)
+static inline std::string CVDInfoList2String(std::vector<ClamavVDInfo>& v)
 {
 
     std::vector<ClamavVDInfo>::iterator it;
@@ -100,11 +109,11 @@ public:
 
     int ScanFmap(void* ptr, size_t len, ClamavScanResult* result, uint32_t scan_opt);
 
-    int scanFileFd(int fd , ClamavScanResult* result, uint32_t scan_opt);
+    int scanFileFd(int fd, ClamavScanResult* result, uint32_t scan_opt);
 
-    int scanFileFdRaw(int fd , ClamavScanResult* result);
+    int scanFileFdRaw(int fd, ClamavScanResult* result);
 
-    int scanFileFdStd(int fd , ClamavScanResult* result);
+    int scanFileFdStd(int fd, ClamavScanResult* result);
 
     int getSettings();
     int setSettings(ClamavSettings* settings);
@@ -113,7 +122,7 @@ public:
 
     uint32_t scanSettingMask(const char* setting_section);
     
-    const std::string& getErrInfo() 
+    const std::string&   getErrInfo() 
     {
         return err_info_;
     }

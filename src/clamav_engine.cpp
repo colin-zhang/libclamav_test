@@ -76,31 +76,34 @@ int ClamavEngine::reBuildEngine(ClamavSettings* av_settings)
 
 int ClamavEngine::setSettings(ClamavSettings* settings)
 {
-    if (NULL == settings)
-    {
-        cl_engine_set_num(engine_, CL_ENGINE_AC_ONLY, 1);
+    if (NULL == settings) {
         return 0;
     }
 
-    if (settings->max_file_size != 0)
+    if (settings->max_file_size != 0) {
         cl_engine_set_num(engine_, CL_ENGINE_MAX_FILESIZE, settings->max_file_size);
-    if (settings->max_scan_size != 0)
-        cl_engine_set_num(engine_, CL_ENGINE_MAX_SCANSIZE, settings->max_scan_size);
+    }
 
-    //cl_engine_set_num(engine, CL_ENGINE_AC_ONLY, 1);
+    if (settings->max_scan_size != 0) {
+        cl_engine_set_num(engine_, CL_ENGINE_MAX_SCANSIZE, settings->max_scan_size);
+    }
+
+    if (settings->tmp_file_dir.size() > 0) {
+        cl_engine_set_str(engine_, CL_ENGINE_TMPDIR, settings->tmp_file_dir.c_str());
+    }
+
+    cl_engine_set_ReMatchAlgorithm(engine_, settings->ReMatchAlgorithm);
+    printf("settings->ReMatchAlgorithm = %d\n", settings->ReMatchAlgorithm);
+
     getSettings();
     return 0;
 }
 
 int ClamavEngine::getSettings()
 {
-    long long val;
-    val = cl_engine_get_num(engine_, CL_ENGINE_MAX_FILESIZE, NULL);
-    printf("CL_ENGINE_MAX_FILESIZE = %lld, ", val);
-    val = cl_engine_get_num(engine_, CL_ENGINE_MAX_SCANSIZE, NULL);
-
-    //cl_engine_set_num(engine_, CL_ENGINE_AC_ONLY, 1);
-    printf("CL_ENGINE_MAX_SCANSIZE = %lld\n", val);
+    printf("CL_ENGINE_MAX_FILESIZE = %lld\n", cl_engine_get_num(engine_, CL_ENGINE_MAX_FILESIZE, NULL));
+    printf("CL_ENGINE_MAX_SCANSIZE = %lld\n", cl_engine_get_num(engine_, CL_ENGINE_MAX_SCANSIZE, NULL));    
+    printf("CL_ENGINE_TMPDIR = %s\n", cl_engine_get_str(engine_, CL_ENGINE_TMPDIR, NULL));
     return 0;
 }
 
@@ -195,7 +198,6 @@ int ClamavEngine::scanFileFd(int fd , ClamavScanResult* result, uint32_t scan_op
 
 int ClamavEngine::ScanFmap(void* ptr, size_t len, ClamavScanResult* result, uint32_t scan_opt)
 {
-
     cl_fmap_t* map = cl_fmap_open_memory(ptr, len);
     if (NULL == map) 
     {
